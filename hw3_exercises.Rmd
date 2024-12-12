@@ -1,0 +1,62 @@
+---
+title: "plot_cp_hw3"
+author: "Cole Spinale"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(error = TRUE)
+
+library(devtools)
+library(dplyr)
+library(ggplot2)
+library(plotcppackage)
+devtools::load_all()
+```
+
+```{r}
+dat <- read.csv("dat.csv")
+est <- read.csv("est.csv")
+```
+
+
+```{r}
+plot_cp(dat, est, iso_code = 4)
+plot_cp(dat, est, iso_code = 4, CI = NA)
+plot_cp(dat, est, iso_code = 404, CI = 80)
+```
+
+```{r}
+get_width_ci(est, iso_code = 4, coverage = 95)
+get_width_ci(est, iso_code = 4, coverage = 80)
+```
+
+Input dat does NOT contain variable iso, year and/or cp
+```{r}
+plot_cp(dat %>% select(-iso), est, iso_code = 4)
+plot_cp(dat %>% select(-Year), est, iso_code = 4)
+plot_cp(dat %>% select(-cp), est, iso_code = 4)
+```
+
+iso_code is not found in “dat” or “est”
+```{r}
+plot_cp(dat %>% select(-iso), est, iso_code = 4)
+plot_cp(dat, est %>% select(-iso), iso_code = 4)
+```
+
+cp is not numeric
+```{r}
+dat_bug <- dat %>%mutate(cp = FALSE)
+plot_cp(dat_bug, est, iso_code = 4)
+```
+
+CI is not one of 80, 95, or NA
+```{r}
+plot_cp(dat, est, iso_code = 4, CI = 99)
+```
+
+
+
+https://github.com/cspinale03/hw3
